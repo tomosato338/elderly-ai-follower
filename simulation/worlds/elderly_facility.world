@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+
+<world name="elderly_facility">
+
+  <include>
+    <uri>model://ground_plane</uri>
+  </include>
+
+  <include>
+    <uri>model://sun</uri>
+  </include>
+
+  <include>
+    <uri>model://walker</uri>
+  </include>
+
+</world>
+
+</sdf>

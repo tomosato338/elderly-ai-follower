@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+
+*.bak
+*.backup
+*.bad
+
+output/
+videos/
