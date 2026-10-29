@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+
+<model name="walker">
+
+  <static>false</static>
+
+  <actor name="human">
+
+    <skin>
+      <filename>
+        file:///usr/share/gazebo-11/media/models/walk.dae
+      </filename>
+      <scale>1.0</scale>
+    </skin>
+
+    <animation name="walking">
+      <filename>
+        file:///usr/share/gazebo-11/media/models/walk.dae
+      </filename>
+      <interpolate_x>true</interpolate_x>
+    </animation>
+
+    <script>
+
+      <loop>true</loop>
+      <auto_start>true</auto_start>
+
+      <trajectory id="0">
+
+        <waypoint>
+          <time>0</time>
+          <pose>0 0 0 0 0 0</pose>
+        </waypoint>
+
+        <waypoint>
+          <time>10</time>
+          <pose>5 0 0 0 0 0</pose>
+        </waypoint>
+
+      </trajectory>
+
+    </script>
+
+  </actor>
+
+</model>
+
+</sdf>
