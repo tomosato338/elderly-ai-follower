@@ -7,7 +7,10 @@
   /device/event (std_msgs/String)
       'connect' : デバイスの接続。デバイスが connect_distance 以内に
                   あるときだけ受け付け、FOLLOWING に移る
-      'reset'   : リセットボタン。停止指令を送り、IDLE に戻る
+      'stop'    : 追従の停止。停止指令を送り、IDLE に戻る。
+                  録画と情報は、残す(削除しない)
+      'reset'   : リセットボタン。停止指令を送り、IDLE に戻る。
+                  そのセッションの録画と情報は、録画ノードが削除する
   /device/relative_position (geometry_msgs/PointStamped)
       接続時の近接判定に使う(ロボット座標系での相対位置[m])
 
@@ -19,6 +22,7 @@
 
 動作確認(シミュレーション):
   ros2 topic pub -r 2 -t 3 /device/event std_msgs/msg/String "{data: connect}"
+  ros2 topic pub -r 2 -t 3 /device/event std_msgs/msg/String "{data: stop}"
   ros2 topic pub -r 2 -t 3 /device/event std_msgs/msg/String "{data: reset}"
   (同じイベントを3回送っても、2回目以降は無視されるので問題ない)
 """
@@ -86,6 +90,8 @@ class SessionManager(Node):
         event = msg.data.strip().lower()
         if event == 'connect':
             self.handle_connect()
+        elif event == 'stop':
+            self.handle_stop()
         elif event == 'reset':
             self.handle_reset()
         else:
@@ -124,6 +130,16 @@ class SessionManager(Node):
             self.set_state(IDLE)
         else:
             self.get_logger().info('reset received (already IDLE)')
+
+    def handle_stop(self):
+        # 追従を終える。リセットとの違いは、録画と情報を削除しないこと
+        # (録画ノードは、reset のときだけ削除する)
+        self.send_stop()
+        if self.state == FOLLOWING:
+            self.get_logger().info('stop: follow ended (recording kept)')
+            self.set_state(IDLE)
+        else:
+            self.get_logger().info('stop received (already IDLE)')
 
     # ---- 状態と出力 ----
     def set_state(self, new_state):
