@@ -328,6 +328,7 @@ class SessionRecorder(Node):
                 self.writer = None
                 self.path = None
                 return
+            os.chmod(self.path, 0o600)
 
         self.writer.write(frame)
         self.frames += 1
